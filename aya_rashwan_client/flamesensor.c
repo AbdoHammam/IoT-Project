@@ -8,7 +8,7 @@
 #define THRESHOLD 600
 
 extern "C"
-const char* return_string()
+const char* flame_sensor()
 {
     mraa_aio_context adc;
     uint16_t value;
