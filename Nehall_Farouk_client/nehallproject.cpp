@@ -13,7 +13,7 @@
         #define DIGITAL_PIN_LED  11
         #define DIGITAL_PIN_BUZZER 12
 
-        #define THRESHOLD 750
+        #define THRESHOLD 60
 
 
         extern "C"
@@ -109,7 +109,7 @@
         if (value < THRESHOLD)
           {
            mraa_gpio_write(gpio1, 1);
-           printf("GPIO 1    tempreture %0.2f \n",float(value-725));
+           printf("GPIO 1    tempreture %0.2f \n",float(value-*.47));
 		   
           return "board6, on";
 		
@@ -123,7 +123,7 @@
              return "board6,off";
              
 			 mraa_gpio_write(gpio2 ,1);
-             printf("GPIO 0   tempreture %0.2f \n",float(value-725));
+             printf("GPIO 0   tempreture %0.2f \n",float(value*.47));
           }
 		  
 		  
