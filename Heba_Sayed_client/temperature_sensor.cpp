@@ -26,12 +26,11 @@ void wait(int seconds){
 
 const char* return_string()
 {
-const struct sched_param priority={1};
- sched_setscheduler(0,SCHED_FIFO,&priority);
- int buf[41];
- mraa_gpio_context pin = mraa_gpio_init(3);
+	int buf[41];
+ 
  while(1)
  {
+	 mraa_gpio_context pin = mraa_gpio_init(3);
 	 mraa_gpio_use_mmaped(pin,1);
 	 mraa_gpio_dir(pin, MRAA_GPIO_OUT_HIGH);
 	 
@@ -62,25 +61,12 @@ const struct sched_param priority={1};
 	 int byte4=getByte(4,buf);
 	 int byte5=getByte(5,buf);
 
-	 printf("Checksum %d %d \n",byte5,
-		 (byte1+byte2+byte3+byte4) & 0xFF);
+	 //printf("Checksum %d %d \n",byte5,(byte1+byte2+byte3+byte4) & 0xFF);
 		int Checksum = (byte1+byte2+byte3+byte4) & 0xFF;
 	 float temperature;
-	 int neg=byte3&0x80;
 	 byte3=byte3&0x7F;
-	 temperature= (float) (byte3<<8 |byte4)/10.0;
-	 if(neg>0)temperature=-temperature;
-	 if(temperature <= 300)
-	 {
-		printf("Temperature= %0.f \n",temperature);
-		return "board2, on";
-	 }
-	 else
-	 {
-		printf("transmission of data failed\n");
-		return "board2, off";
-	 }
-	/* if(Checksum == byte5)
+	 temperature= (float) (byte4)/10.0;
+	 if(Checksum == byte5)
 	 {
 		printf("Temperature= %f \n",temperature);
 		return "board2, on";
@@ -89,7 +75,7 @@ const struct sched_param priority={1};
 	 {
 		 printf("transmission of data failed\n");
 		 return "board2, off";
-	 }*/
+	 }
 	 wait(5);
  }
 
