@@ -6,7 +6,7 @@
 #define DIGITAL_PIN 7
 #define THRESHOLD 500
  
-extern ""
+extern "C"
 
    const char* return_string()
     {
