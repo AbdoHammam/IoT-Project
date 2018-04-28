@@ -5,9 +5,11 @@
 #define ANALOG_PIN 0
 #define DIGITAL_PIN 7
 #define THRESHOLD 500
+ 
+extern ""
 
-int main ()
-{
+   const char* return_string()
+    {
 	mraa_aio_context adc;
 	uint16_t value;
 	mraa_result_t result;
@@ -27,7 +29,6 @@ int main ()
 		
 		return "cannot init digital pin";
 	}
-	
 	
 	
 	result = mraa_gpio_dir(gpio, MRAA_GPIO_OUT);
@@ -61,7 +62,7 @@ int main ()
                       return "board2, on";
 			
 		}
-		sleep(1);
+          	sleep(1);	
 	}
-	return 0;
-}
+	
+  }
