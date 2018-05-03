@@ -2,14 +2,22 @@ import socket, sys
 import threading
 import time
 import mraa
- 
-TCP_IP = '169.254.150.151'
- 
-TCP_PORTS = [5005]
+import json
+TCP_IP = '192.168.1.100'
+from math import sin,cos,atan2,sqrt,radians
+TCP_PORTS = [5005,5008]
  
 BUFFER_SIZE = 1024
- 
- 
+
+
+
+
+l1=[]
+l1.append(-1.0)
+l1.append(-1.0)
+l2=[]
+l2.append(-1.0)
+l2.append(-1.0)
 class listen_to_port(threading.Thread):
  
     def __init__(self,thread_name,ip,port_number,buffer_size):
@@ -25,9 +33,15 @@ class listen_to_port(threading.Thread):
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
  
         s.bind((self.ip, self.port_number))
- 
+
+
+
+
         s.listen(1)
- 
+
+
+
+
         while 1:
                 conn, addr = s.accept()
                 print ('Connection address:', addr)
@@ -41,9 +55,32 @@ class listen_to_port(threading.Thread):
           	        	current_status = 1
                         else:
                                 current_status = 0
-                        gpio_1.write(current_status)
+                        if data.find("Board") != -1:
+				data = data.replace('\n','')
+				j = json.loads(data)
+
+				if j["Board"]==1:
+					l1[0] = radians(j["Latitude"])
+					l1[1] = radians(j["Longitude"])
+					print "Board1\n"
+				else:
+					l2[0] = radians(j["Latitude"])
+					l2[1] = radians(j["Longitude"])
+					print "Board2\n"
+
+				if l1[0] != -1.0 and l2[0] != -1.0:
+					dlong = l2[1] - l1[1]
+					dlat = l2[0] - l1[0]
+					a = sin(dlat / 2)**2 + cos(l1[0]) * cos(l2[0]) * sin(dlong/2)**2
+					c = 2 * atan2(sqrt(a) , sqrt(1-a))
+					distance = 6373.0 * c * 1000
+					print distance
+					if distance < 2000:
+						gpio_1.write(1)
+					#break
+#			gpio_1.write(current_status)
                         print ("received data:", data)
- 
+
                         if data == 'close':
                                 break
                 conn.close()
@@ -54,4 +91,4 @@ for port_number in TCP_PORTS:
         thread =listen_to_port("Thread"+str(port_number),TCP_IP,port_number,BUFFER_SIZE)
         thread.start()
     except:
-print("problem in starting thread")
+	print("problem in starting thread")
