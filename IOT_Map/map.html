@@ -1,0 +1,56 @@
+
+<html>
+<head>
+<script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
+</script>
+
+<script type="text/javascript">
+var locations = [
+    {lat:30.016856, lng: 31.213481
+},{lat:30.216856000000003, lng: 31.413481000000004},{lat:30.116856000000002, lng: 31.313481000000003
+}
+]
+      
+function initMap() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 18,
+          center: {lat:30.0307949, lng: 31.2100348}
+        });
+
+        var labels = "132";
+
+        var markers = locations.map(function(location, i) {
+          return new google.maps.Marker({
+            position: location,
+            label: labels[i % labels.length]
+          });
+        });
+
+        var markerCluster = new MarkerClusterer(map, markers,
+            {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' });
+ 
+ }
+
+</script>
+<style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+</style>
+
+</head>
+<body>
+<div id="map"></div>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCAzpwk6zkm2iJobeGM7XfPbLyuPha5T3c&callback=initMap"  async defer></script>
+
+</body>
+</html>
