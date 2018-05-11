@@ -1,10 +1,7 @@
-
-#include <Python.h>
 #include "mraa.h"
 #include <stdio.h>
 #include <unistd.h>
-
-
+#include<time.h>
 
 uint getByte(int b,int buf[]){
  int i;
@@ -24,13 +21,14 @@ void wait(int seconds){
 	while (clock()<endwait);
 }
 
-const char* return_string()
+int main()
 {
-	int buf[41];
- 
+ const struct sched_param priority={1};
+ sched_setscheduler(0,SCHED_FIFO,&priority);
+ int buf[41];
+ mraa_gpio_context pin = mraa_gpio_init(3);
  while(1)
  {
-	 mraa_gpio_context pin = mraa_gpio_init(3);
 	 mraa_gpio_use_mmaped(pin,1);
 	 mraa_gpio_dir(pin, MRAA_GPIO_OUT_HIGH);
 	 
@@ -61,25 +59,26 @@ const char* return_string()
 	 int byte4=getByte(4,buf);
 	 int byte5=getByte(5,buf);
 
-	 //printf("Checksum %d %d \n",byte5,(byte1+byte2+byte3+byte4) & 0xFF);
+	 printf("Checksum %d %d \n",byte5,
+		 (byte1+byte2+byte3+byte4) & 0xFF);
 		int Checksum = (byte1+byte2+byte3+byte4) & 0xFF;
 	 float temperature;
+	 int neg=byte3&0x80;
 	 byte3=byte3&0x7F;
-	 temperature= (float) (byte4)/10.0;
+	 temperature= (float) (byte3<<8 |byte4)/10.0;
+	 if(neg>0)temperature=-temperature;
 	 if(Checksum == byte5)
 	 {
 		printf("Temperature= %f \n",temperature);
-		return "board2, on";
+		break;
 	 }
 	 else
 	 {
 		 printf("transmission of data failed\n");
-		 return "board2, off";
 	 }
 	 wait(5);
  }
 
-
-
+ return MRAA_SUCCESS;
 }
- 
+
