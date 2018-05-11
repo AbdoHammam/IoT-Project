@@ -1,118 +1,85 @@
-import socket
+import socket, sys
+import threading
+import time
+#import mraa
+import json
 import webbrowser
-
-buffer_size = 1024
-
-ip, port_number = "192.168.8.7", 5050
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.bind((ip, port_number))
-s.listen(1)
-
-lstOfLocations = {}
-while 1:
-    conn, addr = s.accept()
-    print ('Connection address:', addr)
-    while 1:
-        data = conn.recv(buffer_size)
-        print ("received data:", data)
-        a, b, c = parseJson(data)
-        lstOfLocations[a]=(b,c)
-
-#print(lstOfLocations)
-centerLng = 31.2100348
-centerLat=30.0307949
-
-f = open('map.html','w')
-
-message = """
-<html>
-<head>
-<script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
-</script>
-
-<script type="text/javascript">
-var locations = [
-    {}
-]
-      
-function initMap() {{
-        var map = new google.maps.Map(document.getElementById('map'), {{
-          zoom: 18,
-          center: {}
-        }});
-
-        var labels = "{}";
-
-        var markers = locations.map(function(location, i) {{
-          return new google.maps.Marker({{
-            position: location,
-            label: labels[i % labels.length]
-          }});
-        }});
-
-        var markerCluster = new MarkerClusterer(map, markers,
-            {{imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' }});
+import math
+import urllib
+import urllib2
+from gmplot import gmplot
+import webbrowser, os
+import time
  
- }}
+ 
+TCP_IP = '192.168.43.119' # your ip
 
-</script>
-<style>
-      /* Always set the map height explicitly to define the size of the div
-       * element that contains the map. */
-      #map {{
-        height: 100%;
-      }}
-      /* Optional: Makes the sample page fill the window. */
-      html, body {{
-        height: 100%;
-        margin: 0;
-        padding: 0;
-      }}
-</style>
+TCP_PORTS = [5001,5002,5003,5004,5005,5006,5007,5008,5050]
 
-</head>
-<body>
-<div id="map"></div>
+flag=[]
+flag.append(True) 
+BUFFER_SIZE = 1024
+lstOfLocations = {}
+ 
+class listen_to_port(threading.Thread):
+ 
+    def __init__(self,thread_name,ip,port_number,buffer_size):
+                threading.Thread.__init__(self)
+                self.thread_name=thread_name
+                self.ip=ip
+                self.port_number=port_number
+                self.buffer_size=buffer_size
+ 
 
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCAzpwk6zkm2iJobeGM7XfPbLyuPha5T3c&callback=initMap"  async defer></script>
+    def run(self):
+        print("opening thread: "+self.thread_name)
+ 
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+ 
+        s.bind((self.ip, self.port_number))
+ 
+        s.listen(1)
+       
+        while 1:
+                conn, addr = s.accept()
+                print ('Connection address:', addr)
+                #gmap = gmplot.GoogleMapPlotter(30.0307949, 31.2100348, 13)
+                while 1:
+                        data = conn.recv(self.buffer_size)
+                        print ("received data:", data)
+                        a, b, c = self.parseJson(data)
+                        lstOfLocations[a]=(b,c)
 
-</body>
-</html>
-"""
-
-locationsToDraw = ""
-oneLocation = "{{lat:{}, lng: {}}}"
-x=0
-while(x<len(lstOfLocations)):
-    if(x == len(lstOfLocations)-1):
-        locationsToDraw = locationsToDraw+oneLocation
-    else:
-        locationsToDraw = locationsToDraw+oneLocation+","
-    x+=1
-
-#print(locationsToDraw)
-labels = ""
-lst = []
-for i,j in lstOfLocations.items():
-    lst += [j[0]] + [j[1]]
-    labels += i
-locationsToDraw = locationsToDraw.format(*lst)
-centerLocation="{{lat:{}, lng: {}}}"
-centerLocation = centerLocation.format(centerLat,centerLng)
-
-message = message.format(locationsToDraw,centerLocation,labels)
-f.write(message)
-f.close()
-
-webbrowser.open_new_tab('map.html')
-
-def parseJson(json):
-    json = str(json).split('\n')
-    json = json[0]
-    x, y, z = str(json).split(',')
-    x = int(x[x.find(':')+1:])
-    y = float(y[y.find(':')+1:])
-    z = float(z[z.find(':')+1:-2])
-    return  x, y, z
-
-
+                	gmap = gmplot.GoogleMapPlotter(30.0307949, 31.2100348, 13)
+                	for i,j in lstOfLocations.items():
+                    		gmap.marker(j[0]+(i/1000.0), j[1]+(i/1000.0), 'cornflowerblue')
+                    	#conn.close()
+                	if flag[0] == True:
+                    		webbrowser.open("my_map.html", new=1)
+                    		gmap.draw("my_map.html")
+                    		flag[0]=False
+                	else:
+                    		gmap.draw("my_map.html")
+                    		time.sleep(3)
+ 
+        s.close()
+        s = none
+ 
+ 
+    def parseJson(self, json):
+        json = str(json).split('\n')
+        json = json[0]
+        x, y, z = str(json).split(',')
+        x = float(x[x.find(':')+1:])
+        y = float(y[y.find(':')+1:])
+        z = float(z[z.find(':')+1:-2])
+        return  x, y, z
+ 
+ 
+ 
+for port_number in TCP_PORTS:
+    try:
+        thread =listen_to_port("Thread"+str(port_number),TCP_IP,port_number,BUFFER_SIZE)
+        thread.start()
+    except:
+        print("problem in starting thread")
