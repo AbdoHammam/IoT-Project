@@ -8,8 +8,8 @@
  
 extern "C"
 
-   const char* return_string()
-    {
+const char* return_string()
+{
 	mraa_aio_context adc;
 	uint16_t value;
 	mraa_result_t result;
@@ -65,4 +65,4 @@ extern "C"
           	sleep(1);	
 	}
 	
-  }
+ }
