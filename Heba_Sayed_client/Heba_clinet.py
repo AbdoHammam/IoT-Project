@@ -4,7 +4,7 @@ import mraa
 import time
  
 from ctypes import *
-lib = cdll.LoadLibrary('./temperature.so')  
+lib = cdll.LoadLibrary('./light.so')  
 lib.return_string.restype = c_char_p
 s = socket.socket()         
 host = "192.168.3.2"    
