@@ -49,15 +49,12 @@ extern "C"
 		fprintf(stdout, "pin A%d recieved %hu .\n", ANALOG_PIN, value);
 		if(value < THRESHOLD)
 		{
-			//result = mraa_gpio_write(gpio , 1);
-			//fprintf(stdout , "GPIO 1 \n");
                        
                        return "board2, off";
 		}
 		else
 		{
 			result = mraa_gpio_write(gpio, 0);
-			//fprintf(stdout , "GPIO 0 \n");
                       
                       return "board2, on";
 			

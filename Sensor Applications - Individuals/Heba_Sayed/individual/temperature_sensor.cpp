@@ -49,9 +49,9 @@ int main()
 	  if(i>75)buf[j]=1;
 	 }
 
-	 for(j=0;j<=40;j++){
+	 /*for(j=0;j<=40;j++){
 	  //printf("%d %d \n",j,buf[j]);
-	 }
+	 }*/
 
 	 int byte1=getByte(1,buf);
 	 int byte2=getByte(2,buf);
