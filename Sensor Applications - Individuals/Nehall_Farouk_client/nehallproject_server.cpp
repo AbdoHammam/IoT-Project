@@ -1,8 +1,10 @@
-        #include <stdio.h>
-        #include <unistd.h>
-        #include "mraa.h"
-        #include "mraa/aio.h"
-        
+      #include <stdio.h>
+      #include <unistd.h>
+      #include <Python.h>
+      #include "mraa.h"
+      #include "mraa/aio.h"
+
+
 	   
 	   
         /*  analog pin is the input */
@@ -12,7 +14,7 @@
         #define DIGITAL_PIN_LED  11
         #define DIGITAL_PIN_BUZZER 12
        /*   determining the THRESHOLD */
-        #define THRESHOLD 41
+        #define THRESHOLD 60
 
 
         extern "C"
