@@ -7,10 +7,7 @@
         #include "mraa/aio.h"
 
         
-
-	   
-
-	   
+ 
 
         /*  analog pin is the input */
 
@@ -32,16 +29,9 @@
 
 
 
-        extern "C"
-
-     const char* return_string()
-
-
-
+       int main()
         {
-
-        
-
+	
         mraa_aio_context adc;
 
         uint16_t   value;
