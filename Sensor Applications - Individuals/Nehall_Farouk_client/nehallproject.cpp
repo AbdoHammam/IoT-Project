@@ -2,8 +2,7 @@
         #include <unistd.h>
         #include "mraa.h"
         #include "mraa/aio.h"
-        # include <Python.h>
-
+        
 	   
 	   
         /*  analog pin is the input */
@@ -12,8 +11,8 @@
        /*  digital pin is the output */
         #define DIGITAL_PIN_LED  11
         #define DIGITAL_PIN_BUZZER 12
-
-        #define THRESHOLD 60
+       /*   determining the THRESHOLD */
+        #define THRESHOLD 41
 
 
         extern "C"
@@ -59,8 +58,7 @@
         printf(" Pin %d is initiated\n", ANALOG_PIN);
 		
 		
-		
-		
+	
        
         /* Set Digital pin direction For both LED and BUzzer */
         result1 = mraa_gpio_dir(gpio1, MRAA_GPIO_OUT);
@@ -86,12 +84,7 @@
           {
              printf("Buzzer Pin %d is initiated as output\n", DIGITAL_PIN_BUZZER);
           }
-
-
-
-
-
-		  
+	  
 		  
         /* loop that read from sensor and make processing */
 
@@ -104,26 +97,20 @@
 
 		
 		
-        /* light for low tempreture  and Light for higher than 26 */
+        /* light for low tempreture  and buzz for  tempreture higher than 18 */
 		
         if (value < THRESHOLD)
           {
            mraa_gpio_write(gpio1, 1);
-           printf("GPIO 1    tempreture %0.2f \n",float(value-*.47));
-		   
-          return "board6, on";
-		
+           printf("GPIO 1    tempreture %0.2f \n",float(value*0.47));
            mraa_gpio_write(gpio2 ,0);
           }
 
         else
           {
              mraa_gpio_write(gpio1, 0);
-			 
-             return "board6,off";
-             
-			 mraa_gpio_write(gpio2 ,1);
-             printf("GPIO 0   tempreture %0.2f \n",float(value*.47));
+	     mraa_gpio_write(gpio2 ,1);
+             printf("GPIO 0   tempreture %0.2f \n",float(value*0.47));
           }
 		  
 		  
