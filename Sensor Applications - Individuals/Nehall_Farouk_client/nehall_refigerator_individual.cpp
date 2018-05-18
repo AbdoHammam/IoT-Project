@@ -7,12 +7,10 @@
         #include "mraa/aio.h"
 
         
- 
 
         /*  analog pin is the input */
 
         #define ANALOG_PIN  1
-
 
 
        /*  digital pin is the output */
@@ -32,17 +30,17 @@
        int main()
         {
 	
-        mraa_aio_context adc;
+          mraa_aio_context adc;
 
-        uint16_t   value;
+          uint16_t   value;
 
-        mraa_result_t result1;
+          mraa_result_t result1;
 
-        mraa_result_t result2;
+          mraa_result_t result2;
 
-        mraa_gpio_context gpio1;
+          mraa_gpio_context gpio1;
 
-        mraa_gpio_context gpio2;
+          mraa_gpio_context gpio2;
 
 
 
