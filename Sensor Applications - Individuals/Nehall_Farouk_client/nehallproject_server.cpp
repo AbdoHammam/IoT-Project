@@ -51,7 +51,8 @@
 
 
 
-        /* Initialisation of analog pin */
+
+		/* Initialisation of analog pin */
         adc = mraa_aio_init(ANALOG_PIN);
         if (adc == NULL)
          {
@@ -105,12 +106,14 @@
           {
            mraa_gpio_write(gpio1, 1);
            printf("GPIO 1    tempreture %0.2f \n",float(value*0.47));
-           mraa_gpio_write(gpio2 ,0);
+            return "board2, on";
+	   mraa_gpio_write(gpio2 ,0);
           }
 
         else
           {
              mraa_gpio_write(gpio1, 0);
+             return "board2, off";
 	     mraa_gpio_write(gpio2 ,1);
              printf("GPIO 0   tempreture %0.2f \n",float(value*0.47));
           }
