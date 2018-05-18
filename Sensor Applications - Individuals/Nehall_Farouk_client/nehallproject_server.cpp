@@ -61,8 +61,7 @@
         printf(" Pin %d is initiated\n", ANALOG_PIN);
 		
 		
-	
-       
+	6       
         /* Set Digital pin direction For both LED and BUzzer */
         result1 = mraa_gpio_dir(gpio1, MRAA_GPIO_OUT);
         if (result1 != MRAA_SUCCESS)
@@ -106,14 +105,14 @@
           {
            mraa_gpio_write(gpio1, 1);
            printf("GPIO 1    tempreture %0.2f \n",float(value*0.47));
-            return "board2, on";
+            return "board6, on";
 	   mraa_gpio_write(gpio2 ,0);
           }
 
         else
           {
              mraa_gpio_write(gpio1, 0);
-             return "board2, off";
+             return "board6, off";
 	     mraa_gpio_write(gpio2 ,1);
              printf("GPIO 0   tempreture %0.2f \n",float(value*0.47));
           }
