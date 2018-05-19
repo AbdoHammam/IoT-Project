@@ -3,6 +3,9 @@
 #include <unistd.h>
 #include<time.h>
 
+
+#define DIGITAL_PIN 5
+
 uint getByte(int b,int buf[]){
  int i;
  uint result=0;
@@ -26,9 +29,18 @@ int main()
  const struct sched_param priority={1};
  sched_setscheduler(0,SCHED_FIFO,&priority);
  int buf[41];
+ mraa_result_t result;
  mraa_gpio_context pin = mraa_gpio_init(3);
+ mraa_gpio_context gpio;
+ gpio = mraa_gpio_init(DIGITAL_PIN);
+ 
+ result = mraa_gpio_dir(gpio, MRAA_GPIO_OUT);
+ 
+ 
  while(1)
  {
+	 
+	 
 	 mraa_gpio_use_mmaped(pin,1);
 	 mraa_gpio_dir(pin, MRAA_GPIO_OUT_HIGH);
 	 
@@ -44,14 +56,10 @@ int main()
 	  for(i=1;i<200;i++){
 	   if(mraa_gpio_read(pin)==0)break;
 	  }
-	  //printf("%d ",i);
 	  buf[j]=0;
 	  if(i>75)buf[j]=1;
 	 }
 
-	 /*for(j=0;j<=40;j++){
-	  //printf("%d %d \n",j,buf[j]);
-	 }*/
 
 	 int byte1=getByte(1,buf);
 	 int byte2=getByte(2,buf);
@@ -70,11 +78,15 @@ int main()
 	 if(Checksum == byte5)
 	 {
 		printf("Temperature= %f \n",temperature);
+		result = mraa_gpio_write(gpio, 1);
+		wait(5);
+		result = mraa_gpio_write(gpio, 0);
 		break;
 	 }
 	 else
 	 {
-		 printf("transmission of data failed\n");
+		 printf("transmission of data failed Temperature= %0.f \n",temperature);
+		 result = mraa_gpio_write(gpio, 0);
 	 }
 	 wait(5);
  }
